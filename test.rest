@@ -1,0 +1,6 @@
+GET https://localhost:3000/admin
+Content-Type: application/json
+
+{
+    "userID": 1
+}
