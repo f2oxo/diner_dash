@@ -4,7 +4,7 @@ const User = require('../models/User');
 
 const signup = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password,Role,Address } = req.body;
 
         
         const existingUser = await User.findOne({ email });
@@ -17,7 +17,9 @@ const signup = async (req, res) => {
         const user = new User({
             username,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            Role,
+            Address
         });
 
         await user.save();
@@ -33,20 +35,30 @@ const login = async (req, res) => {
         const { email, password } = req.body;
 
         
+        if (!email || !password) {
+            return res.status(400).json({ message: 'Email and password are required' });
+        }
+
+        
         const user = await User.findOne({ email });
-        if (!user) return res.status(400).json({ message: 'Invalid email or password' });
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
 
         
         const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) return res.status(400).json({ message: 'Invalid email or password' });
+        if (!validPassword) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
 
         
-        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: user._id, email: user.email },"abcdef");
 
         res.json({ token });
 
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Login error:", error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 };
 

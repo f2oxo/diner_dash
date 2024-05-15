@@ -1,10 +1,10 @@
-const Category = require('../models/Category');
+const category = require('../models/Category');
 
-exports.createCategory = async (req, res) => {
+const createCategory = async (req, res) => {
     try {
         const { name } = req.body;
 
-        const category = new Category({
+        const category = new category({
             name
         });
 
@@ -16,12 +16,12 @@ exports.createCategory = async (req, res) => {
     }
 };
 
-exports.updateCategory = async (req, res) => {
+const updateCategory = async (req, res) => {
     try {
         const { categoryId } = req.params;
         const { name } = req.body;
 
-        await Category.findByIdAndUpdate(categoryId, { name });
+        await category.findByIdAndUpdate(categoryId, { name });
 
         res.json({ message: 'Category updated successfully' });
     } catch (error) {
@@ -29,7 +29,7 @@ exports.updateCategory = async (req, res) => {
     }
 };
 
-exports.addItemToCategory = async (req, res) => {
+const addItemToCategory = async (req, res) => {
     try {
         const { categoryId } = req.params;
         const { itemId } = req.body;
@@ -44,7 +44,7 @@ exports.addItemToCategory = async (req, res) => {
     }
 };
 
-exports.removeItemFromCategory = async (req, res) => {
+const removeItemFromCategory = async (req, res) => {
     try {
         const { categoryId, itemId } = req.params;
 
@@ -57,3 +57,5 @@ exports.removeItemFromCategory = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+module.exports = {removeItemFromCategory , addItemToCategory ,updateCategory ,createCategory};
